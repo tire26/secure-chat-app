@@ -1,9 +1,13 @@
 package com.example.securechatapp.service;
 
 import com.example.securechatapp.model.ChatHistory;
+import com.example.securechatapp.model.Nickname;
 import com.example.securechatapp.model.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -17,15 +21,11 @@ public class ChatService {
     private Map<User, ChatHistory> userChatMap;
     private MessageService messageService;
     private UdpSenderService udpSender;
-    private String nickname;
-    @Autowired
-    public ChatService(MessageService messageService,
-                       UdpSenderService udpSender, String nickname) {
-        this.udpSender = udpSender;
-        this.nickname = nickname;
+    private Nickname nickname;
+    private UdpReceiverService udpReceiverService;
+
+    public ChatService() {
         userChatMap = new HashMap<>();
-        this.messageService = messageService;
-        this.udpSender.broadcastPublicKey();
     }
 
     public void createChat(User conversationUser) {
@@ -39,7 +39,7 @@ public class ChatService {
 
         ChatHistory chatHistory = userChatMap.get(conversationUser);
         String encryptedMsgString = new String(encryptMessage, StandardCharsets.UTF_8);
-        chatHistory.add(message, nickname);
+        chatHistory.add(message, nickname.getNickname());
         return encryptedMsgString;
     }
 
@@ -48,4 +48,28 @@ public class ChatService {
         return decryptedMessage;
     }
 
+    public void startUdpSession() {
+        this.udpSender.broadcastPublicKey();
+        this.udpReceiverService.startUdpListener();
+    }
+
+    @Autowired
+    public void setUdpReceiverService(@Lazy UdpReceiverService udpReceiverService) {
+        this.udpReceiverService = udpReceiverService;
+    }
+
+    @Autowired
+    public void setMessageService(MessageService messageService) {
+        this.messageService = messageService;
+    }
+
+    @Autowired
+    public void setUdpSender(UdpSenderService udpSender) {
+        this.udpSender = udpSender;
+    }
+
+    @Autowired
+    public void setNickname(Nickname nickname) {
+        this.nickname = nickname;
+    }
 }

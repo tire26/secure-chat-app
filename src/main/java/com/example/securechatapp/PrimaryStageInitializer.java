@@ -1,6 +1,7 @@
 package com.example.securechatapp;
 
 import com.example.securechatapp.controller.ChatController;
+import com.example.securechatapp.controller.LaunchPageController;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -30,7 +31,7 @@ public class PrimaryStageInitializer implements ApplicationListener<StageReadyEv
         stage.setResizable(false);
         stage.setOnCloseRequest(windowEvent -> stop());
 
-        Scene scene = new Scene(fxWeaver.loadView(ChatController.class), 968, 338);
+        Scene scene = new Scene(fxWeaver.loadView(LaunchPageController.class), 600.0, 400.0);
         stage.setScene(scene);
         stage.show();
     }

@@ -1,8 +1,8 @@
 package com.example.securechatapp.service;
 
 import com.example.securechatapp.controller.ChatController;
+import com.example.securechatapp.model.Nickname;
 import com.example.securechatapp.model.User;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,24 +21,16 @@ public class UdpReceiverService extends UdpWorkerAbstract {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private ConnectedClientsService connectedClientsService;
-    private ChatController chatController;
     private DatagramSocket datagramSocket;
+    private ChatController chatController;
     private UdpSenderService udpSenderService;
-    private String nickname;
+    private Nickname nickname;
 
-    @Autowired
-    public UdpReceiverService(ConnectedClientsService connectedClientsService,
-                              ChatController chatController,
-                              KeyGeneratorService keyGeneratorService, UdpSenderService udpSenderService, String nickname) {
-        this.udpSenderService = udpSenderService;
-        this.nickname = nickname;
+    public UdpReceiverService() {
         logger = LoggerFactory.getLogger(ManagementFactory.class.getName());
-        this.keyGeneratorService = keyGeneratorService;
-        this.chatController = chatController;
-        this.connectedClientsService = connectedClientsService;
     }
 
-    @PostConstruct
+
     public void startUdpListener() {
         executorService.execute(() -> {
             try {
@@ -73,9 +65,9 @@ public class UdpReceiverService extends UdpWorkerAbstract {
 
     private void addNewUserInNetwork(User o) {
         User user = o;
-        if (!connectedClientsService.contains(user.getNickname()) && !user.getNickname().matches(nickname)) {
+        if (!connectedClientsService.contains(user.getNickname()) && !user.getNickname().matches(nickname.getNickname())) {
             connectedClientsService.add(user);
-            chatController.newUser();
+            chatController.newUser(o);
 
             udpSenderService.sendIdentity();
 
@@ -86,5 +78,26 @@ public class UdpReceiverService extends UdpWorkerAbstract {
     @Autowired
     public void setDatagramSocket(DatagramSocket datagramSocket) {
         this.datagramSocket = datagramSocket;
+    }
+
+
+    @Autowired
+    public void setNickname(Nickname nickname) {
+        this.nickname = nickname;
+    }
+
+    @Autowired
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
+    }
+
+    @Autowired
+    public void setConnectedClientsService(ConnectedClientsService connectedClientsService) {
+        this.connectedClientsService = connectedClientsService;
+    }
+
+    @Autowired
+    public void setUdpSenderService(UdpSenderService udpSenderService) {
+        this.udpSenderService = udpSenderService;
     }
 }

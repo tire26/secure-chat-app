@@ -1,6 +1,7 @@
 package com.example.securechatapp.service;
 
 import com.example.securechatapp.controller.ChatController;
+import com.example.securechatapp.model.Nickname;
 import com.example.securechatapp.model.User;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -25,10 +26,11 @@ public class TcpReceiverService {
     private ConnectedClientsService connectedClientsService;
     private ChatController chatController;
     private ServerSocket serverSocket;
-    private String nickname;
+    private Nickname nickname;
+
     public TcpReceiverService(ConnectedClientsService connectedClientsService,
                               ChatController chatController, ServerSocket serverSocket,
-                              String nickname) {
+                              Nickname nickname) {
         this.connectedClientsService = connectedClientsService;
         this.chatController = chatController;
         this.serverSocket = serverSocket;
@@ -64,7 +66,7 @@ public class TcpReceiverService {
     private void receiveEncryptedMessage(InetAddress inetAddress, byte[] data) {
         Optional<User> optionalUser = connectedClientsService.getUserByInetAddress(inetAddress);
         User user = optionalUser.orElse(null);
-        if (!Objects.equals(user, null) && !user.getNickname().matches(nickname)) {
+        if (!Objects.equals(user, null) && !user.getNickname().matches(nickname.getNickname())) {
             chatController.receiveMessage(data, user);
         }
     }

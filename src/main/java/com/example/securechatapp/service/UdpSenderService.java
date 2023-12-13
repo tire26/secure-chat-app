@@ -1,5 +1,6 @@
 package com.example.securechatapp.service;
 
+import com.example.securechatapp.model.Nickname;
 import com.example.securechatapp.model.User;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,10 @@ import java.security.PublicKey;
 @Service
 public class UdpSenderService extends UdpWorkerAbstract {
 
-    private String nickname;
+    private Nickname nickname;
 
     @Autowired
-    public UdpSenderService(KeyGeneratorService keyGeneratorService, String nickname) {
+    public UdpSenderService(KeyGeneratorService keyGeneratorService, Nickname nickname) {
         this.nickname = nickname;
         this.keyGeneratorService = keyGeneratorService;
         this.logger = LoggerFactory.getLogger(ManagementFactory.class.getName());
@@ -38,18 +39,18 @@ public class UdpSenderService extends UdpWorkerAbstract {
             User currUser = User.builder()
                     .publicKey(publicKey)
                     .inetAddress(localIp)
-                    .nickname(nickname)
+                    .nickname(nickname.getNickname())
                     .build();
 
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(6400);
             final ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(currUser);
             byte[] sendData = baos.toByteArray();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcastInetAddress, port);
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcastInetAddress.getBroadcastInetAddress(), port);
 
             datagramSocket.send(sendPacket);
 
-            logger.atInfo().log("Отправлен широковещательный запрос по ip: " + broadcastInetAddress.getHostAddress());
+            logger.atInfo().log("Отправлен широковещательный запрос по ip: " + broadcastInetAddress.getBroadcastInetAddress().getHostAddress());
         } catch (IOException e) {
             logger.atError().log(e.getMessage());
         }

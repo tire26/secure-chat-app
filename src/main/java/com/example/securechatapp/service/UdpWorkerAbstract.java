@@ -1,5 +1,6 @@
 package com.example.securechatapp.service;
 
+import com.example.securechatapp.model.BroadcastInetAddress;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,7 @@ public abstract class UdpWorkerAbstract {
     protected Logger logger;
     protected KeyGeneratorService keyGeneratorService;
     protected DatagramSocket datagramSocket;
-    protected InetAddress broadcastInetAddress;
+    protected BroadcastInetAddress broadcastInetAddress;
 
 
 
@@ -34,7 +35,7 @@ public abstract class UdpWorkerAbstract {
     }
 
     @Autowired
-    public void setBroadcastInetAddress(InetAddress inetAddress) {
+    public void setBroadcastInetAddress(BroadcastInetAddress inetAddress) {
         this.broadcastInetAddress = inetAddress;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.securechatapp.service;
 
+import com.example.securechatapp.controller.ChatController;
 import com.example.securechatapp.model.User;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
@@ -10,16 +10,10 @@ import java.util.*;
 @Component
 public class ConnectedClientsService {
 
-    private ChatService chatService;
     private final List<User> connectedClients;
 
-    public ConnectedClientsService(ChatService chatService) {
+    public ConnectedClientsService() {
         connectedClients = new ArrayList<>();
-        this.chatService = chatService;
-    }
-
-    public boolean contains(InetAddress clientAddress) {
-        return connectedClients.stream().anyMatch(user -> user.getInetAddress().equals(clientAddress));
     }
 
     public boolean contains(String nickname) {
@@ -32,7 +26,6 @@ public class ConnectedClientsService {
 
     public void add(User conversationUser) {
         connectedClients.add(conversationUser);
-        chatService.createChat(conversationUser);
     }
 
     public Map<String, User> getUserMap() {
@@ -41,9 +34,5 @@ public class ConnectedClientsService {
             userMap.put(user.getNickname(), user);
         }
         return userMap;
-    }
-
-    public List<User> getAll() {
-        return connectedClients;
     }
 }

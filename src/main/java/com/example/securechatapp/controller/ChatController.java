@@ -11,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import lombok.NoArgsConstructor;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 @Component
 @FxmlView("/main-page.fxml")
+@NoArgsConstructor
 public class ChatController {
 
     public ListView<String> availableUsersListView;
@@ -39,13 +41,18 @@ public class ChatController {
     private TextArea encryptedMessageTextArea;
 
     @Autowired
-    public ChatController(ChatService chatService, ConnectedClientsService connectedClientsService) {
+    public void setChatService(ChatService chatService) {
         this.chatService = chatService;
+    }
+
+    @Autowired
+    public void setConnectedClientsService(ConnectedClientsService connectedClientsService) {
         this.connectedClientsService = connectedClientsService;
     }
 
     @FXML
     public void initialize() {
+        chatService.startUdpSession();
         updateUsersPanel();
         userMap = connectedClientsService.getUserMap();
         availableUsersListView.setOnMouseClicked(event -> {
@@ -68,8 +75,9 @@ public class ChatController {
         }
     }
 
-    public void newUser() {
+    public void newUser(User conversationUser) {
         Platform.runLater(() -> {
+            chatService.createChat(conversationUser);
             addUserInScene();
             availableUsersListView.requestLayout();
         });

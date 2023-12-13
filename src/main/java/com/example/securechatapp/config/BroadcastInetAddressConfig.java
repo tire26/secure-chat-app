@@ -1,13 +1,10 @@
 package com.example.securechatapp.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.example.securechatapp.model.BroadcastInetAddress;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,25 +12,13 @@ import java.util.List;
 @Configuration
 public class BroadcastInetAddressConfig {
 
-    @Value("${networkmanager.broadcast-network}")
-    private String broadcastIp;
+    @Bean
+    public BroadcastInetAddress broadcastInetAddress() {
+        return new BroadcastInetAddress();
+    }
 
     @Bean
-    public InetAddress broadcastInetAddress() throws SocketException {
-        return getInetAddress(broadcastIp);
-    }
-
-    private InetAddress getInetAddress(String ip) throws SocketException {
-        List<InetAddress> inetAddresses = listAllBroadcastAddresses();
-        for (InetAddress inetAddress : inetAddresses) {
-            if (inetAddress.toString().equals(ip)) {
-                return inetAddress;
-            }
-        }
-        return null;
-    }
-
-    private List<InetAddress> listAllBroadcastAddresses() throws SocketException {
+    public List<InetAddress> listAllBroadcastAddresses() throws SocketException {
         List<InetAddress> broadcastList = new ArrayList<>();
         Enumeration<NetworkInterface> interfaces
                 = NetworkInterface.getNetworkInterfaces();

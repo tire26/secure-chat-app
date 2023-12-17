@@ -1,20 +1,31 @@
 package com.example.securechatapp.controller;
 
+
 import com.example.securechatapp.model.ChatHistory;
 import com.example.securechatapp.model.User;
 import com.example.securechatapp.service.ChatService;
 import com.example.securechatapp.service.ConnectedClientsStorageService;
+import com.example.securechatapp.service.KeyGeneratorService;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.NoArgsConstructor;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,6 +49,7 @@ public class ChatController {
     private TextArea inputText;
     @FXML
     private TextArea encryptedMessageTextArea;
+
 
     @FXML
     public void initialize() {
@@ -131,5 +143,15 @@ public class ChatController {
     @Autowired
     public void setConnectedClientsStorageService(ConnectedClientsStorageService connectedClientsStorageService) {
         this.connectedClientsStorageService = connectedClientsStorageService;
+    }
+
+    public void openKeyWindow() {
+        try {
+            // Загрузка FXML файла для окна с ключом
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/key.fxml"));
+            Parent root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace(); // Обработка ошибок загрузки FXML файла
+        }
     }
 }

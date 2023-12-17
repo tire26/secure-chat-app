@@ -1,3 +1,5 @@
+// KeyGeneratorService.java
+
 package com.example.securechatapp.service;
 
 import org.slf4j.Logger;
@@ -6,14 +8,14 @@ import org.springframework.stereotype.Service;
 
 import java.lang.management.ManagementFactory;
 import java.security.*;
+import java.util.Base64;
 
 
 @Service
 public class KeyGeneratorService {
 
     private final Logger logger;
-    private KeyPair keyPair;
-
+    private static KeyPair keyPair;
 
     public KeyGeneratorService() {
         logger = LoggerFactory.getLogger(ManagementFactory.class.getName());
@@ -26,7 +28,7 @@ public class KeyGeneratorService {
             keyPairGenerator.initialize(2048);
             keyPair = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
-           logger.atError().log(e.getMessage());
+            logger.atError().log(e.getMessage());
         }
     }
 
@@ -40,6 +42,16 @@ public class KeyGeneratorService {
     public PrivateKey getPrivateKey() {
         if (keyPair != null) {
             return keyPair.getPrivate();
+        }
+        return null;
+    }
+
+    // Добавим метод для форматированного отображения публичного ключа
+    public static String getFormattedPublicKey() {
+        if (keyPair != null) {
+            PublicKey publicKey = keyPair.getPublic();
+            // Вернуть, например, Base64-кодированное представление публичного ключа
+            return Base64.getEncoder().encodeToString(publicKey.getEncoded());
         }
         return null;
     }

@@ -3,9 +3,8 @@ package com.example.securechatapp.controller;
 import com.example.securechatapp.model.ChatHistory;
 import com.example.securechatapp.model.User;
 import com.example.securechatapp.service.ChatService;
-import com.example.securechatapp.service.ConnectedClientsService;
+import com.example.securechatapp.service.ConnectedClientsStorageService;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
@@ -28,7 +27,7 @@ public class ChatController {
     public VBox userPanel;
     public Text chattingUserNick;
     private ChatService chatService;
-    private ConnectedClientsService connectedClientsService;
+    private ConnectedClientsStorageService connectedClientsStorageService;
     private User conversationUser;
     private Map<String, User> userMap;
     private ChatHistory currentChatHistory;
@@ -40,21 +39,11 @@ public class ChatController {
     @FXML
     private TextArea encryptedMessageTextArea;
 
-    @Autowired
-    public void setChatService(ChatService chatService) {
-        this.chatService = chatService;
-    }
-
-    @Autowired
-    public void setConnectedClientsService(ConnectedClientsService connectedClientsService) {
-        this.connectedClientsService = connectedClientsService;
-    }
-
     @FXML
     public void initialize() {
         chatService.startUdpSession();
         updateUsersPanel();
-        userMap = connectedClientsService.getUserMap();
+        userMap = connectedClientsStorageService.getUserMap();
         availableUsersListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 String nickname = availableUsersListView.getSelectionModel().getSelectedItem();
@@ -84,16 +73,25 @@ public class ChatController {
     }
 
     private void addUserInScene() {
-        userMap = connectedClientsService.getUserMap();
+        userMap = connectedClientsStorageService.getUserMap();
         availableUsersListView.getItems().clear();
 
         addUsersInScene(userMap);
     }
 
-    private void updateUsersPanel() {
-        userMap = connectedClientsService.getUserMap();
+    public synchronized void updateUsersPanel() {
+        userMap = connectedClientsStorageService.getUserMap();
         availableUsersListView.getItems().clear();
         addUsersInScene(userMap);
+    }
+
+    public void clearChat(User client) {
+        if (client.equals(conversationUser)) {
+            clearInputArea();
+            currentChatHistory = null;
+            chatHistoryTextArea.clear();
+            chattingUserNick.setText("");
+        }
     }
 
     private void addUsersInScene(Map<String, User> userList) {
@@ -112,7 +110,7 @@ public class ChatController {
     }
 
     @FXML
-    public void encryptAndSend(ActionEvent actionEvent) {
+    public void encryptAndSend() {
         String message = inputText.getText();
         String encryptedMessage = chatService.encryptAndSendMessage(message, conversationUser);
         encryptedMessageTextArea.setText(encryptedMessage);
@@ -120,8 +118,18 @@ public class ChatController {
     }
 
     @FXML
-    public void clear(ActionEvent actionEvent) {
+    public void clearInputArea() {
         encryptedMessageTextArea.clear();
         inputText.clear();
+    }
+
+    @Autowired
+    public void setChatService(ChatService chatService) {
+        this.chatService = chatService;
+    }
+
+    @Autowired
+    public void setConnectedClientsStorageService(ConnectedClientsStorageService connectedClientsStorageService) {
+        this.connectedClientsStorageService = connectedClientsStorageService;
     }
 }

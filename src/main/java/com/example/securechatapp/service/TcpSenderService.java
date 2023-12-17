@@ -20,4 +20,12 @@ public class TcpSenderService {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean sendMessage(User client) {
+        try (Socket ignored = new Socket(client.getInetAddress(), tcpSocketPort)) {
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }

@@ -23,15 +23,15 @@ public class TcpReceiverService {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final Logger logger;
-    private ConnectedClientsService connectedClientsService;
+    private ConnectedClientsStorageService connectedClientsStorageService;
     private ChatController chatController;
     private ServerSocket serverSocket;
     private Nickname nickname;
 
-    public TcpReceiverService(ConnectedClientsService connectedClientsService,
+    public TcpReceiverService(ConnectedClientsStorageService connectedClientsStorageService,
                               ChatController chatController, ServerSocket serverSocket,
                               Nickname nickname) {
-        this.connectedClientsService = connectedClientsService;
+        this.connectedClientsStorageService = connectedClientsStorageService;
         this.chatController = chatController;
         this.serverSocket = serverSocket;
         this.nickname = nickname;
@@ -43,7 +43,7 @@ public class TcpReceiverService {
     public void startTcpListener() {
         executorService.execute(() -> {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -52,7 +52,9 @@ public class TcpReceiverService {
                     if (!serverSocket.isClosed()) {
                         Socket socket = serverSocket.accept();
                         byte[] data = socket.getInputStream().readAllBytes();
-                        receiveEncryptedMessage(socket.getInetAddress(), data);
+                        if (data.length > 0) {
+                            receiveEncryptedMessage(socket.getInetAddress(), data);
+                        }
                     } else {
                         break;
                     }
@@ -64,7 +66,7 @@ public class TcpReceiverService {
     }
 
     private void receiveEncryptedMessage(InetAddress inetAddress, byte[] data) {
-        Optional<User> optionalUser = connectedClientsService.getUserByInetAddress(inetAddress);
+        Optional<User> optionalUser = connectedClientsStorageService.getUserByInetAddress(inetAddress);
         User user = optionalUser.orElse(null);
         if (!Objects.equals(user, null) && !user.getNickname().matches(nickname.getNickname())) {
             chatController.receiveMessage(data, user);

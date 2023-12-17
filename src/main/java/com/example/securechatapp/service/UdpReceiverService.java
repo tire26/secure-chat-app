@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 public class UdpReceiverService extends UdpWorkerAbstract {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private ConnectedClientsService connectedClientsService;
+    private ConnectedClientsStorageService connectedClientsStorageService;
     private DatagramSocket datagramSocket;
     private ChatController chatController;
     private UdpSenderService udpSenderService;
@@ -65,9 +65,8 @@ public class UdpReceiverService extends UdpWorkerAbstract {
 
     private void addNewUserInNetwork(User o) {
         User user = o;
-        if (!connectedClientsService.contains(user.getNickname()) && !user.getNickname().matches(nickname.getNickname())) {
-            connectedClientsService.add(user);
-            chatController.newUser(o);
+        if (!connectedClientsStorageService.contains(user.getNickname()) && !user.getNickname().matches(nickname.getNickname())) {
+            connectedClientsStorageService.add(user);
 
             udpSenderService.sendIdentity();
 
@@ -92,8 +91,8 @@ public class UdpReceiverService extends UdpWorkerAbstract {
     }
 
     @Autowired
-    public void setConnectedClientsService(ConnectedClientsService connectedClientsService) {
-        this.connectedClientsService = connectedClientsService;
+    public void setConnectedClientsService(ConnectedClientsStorageService connectedClientsStorageService) {
+        this.connectedClientsStorageService = connectedClientsStorageService;
     }
 
     @Autowired

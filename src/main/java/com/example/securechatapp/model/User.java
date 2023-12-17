@@ -6,7 +6,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.security.PublicKey;
-import java.util.Random;
 
 @Data
 @Builder

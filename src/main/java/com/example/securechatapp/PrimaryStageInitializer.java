@@ -1,6 +1,5 @@
 package com.example.securechatapp;
 
-import com.example.securechatapp.controller.ChatController;
 import com.example.securechatapp.controller.LaunchPageController;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
-
-import java.net.DatagramSocket;
 
 @Component
 public class PrimaryStageInitializer implements ApplicationListener<StageReadyEvent> {

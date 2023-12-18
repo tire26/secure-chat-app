@@ -2,7 +2,6 @@ package com.example.securechatapp.controller;
 
 import com.example.securechatapp.model.BroadcastInetAddress;
 import com.example.securechatapp.model.Nickname;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

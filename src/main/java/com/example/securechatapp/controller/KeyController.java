@@ -29,7 +29,6 @@ public class KeyController {
         setPublicKey();
     }
 
-    // Метод для установки публичного ключа
     void setPublicKey() {
         String publicKey = keyGeneratorService.getFormattedPublicKey();
         if (publicKeyLabel != null) {

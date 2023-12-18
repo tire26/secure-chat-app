@@ -46,11 +46,9 @@ public class KeyGeneratorService {
         return null;
     }
 
-    // Добавим метод для форматированного отображения публичного ключа
     public String getFormattedPublicKey() {
         if (keyPair != null) {
             PublicKey publicKey = keyPair.getPublic();
-            // Вернуть, например, Base64-кодированное представление публичного ключа
             return Base64.getEncoder().encodeToString(publicKey.getEncoded());
         }
         return null;

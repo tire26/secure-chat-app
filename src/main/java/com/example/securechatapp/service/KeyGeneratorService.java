@@ -15,7 +15,7 @@ import java.util.Base64;
 public class KeyGeneratorService {
 
     private final Logger logger;
-    private static KeyPair keyPair;
+    private KeyPair keyPair;
 
     public KeyGeneratorService() {
         logger = LoggerFactory.getLogger(ManagementFactory.class.getName());
@@ -47,7 +47,7 @@ public class KeyGeneratorService {
     }
 
     // Добавим метод для форматированного отображения публичного ключа
-    public static String getFormattedPublicKey() {
+    public String getFormattedPublicKey() {
         if (keyPair != null) {
             PublicKey publicKey = keyPair.getPublic();
             // Вернуть, например, Base64-кодированное представление публичного ключа

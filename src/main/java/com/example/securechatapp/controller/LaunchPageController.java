@@ -53,7 +53,7 @@ public class LaunchPageController {
     private ComboBox<String> networkComboBox;
 
     @FXML
-    void chooseNetwork(ActionEvent event) {
+    void chooseNetwork() {
         String currAddr = networkComboBox.getSelectionModel().getSelectedItem();
         for (InetAddress inetAddress : listAllBroadcastAddresses) {
             if (inetAddress.getHostAddress().equals(currAddr)) {
@@ -64,7 +64,7 @@ public class LaunchPageController {
     }
 
     @FXML
-    void enter(ActionEvent event) {
+    void enter() {
         if (!enteredNickname.getText().isEmpty() && !networkComboBox.getSelectionModel().isEmpty()) {
             nickname.setNickname(enteredNickname.getText());
             Stage currStage = (Stage) enter.getScene().getWindow();

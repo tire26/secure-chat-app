@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.NoArgsConstructor;
+import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,7 @@ public class ChatController {
     private User conversationUser;
     private Map<String, User> userMap;
     private ChatHistory currentChatHistory;
+    private FxWeaver fxWeaver;
 
     @FXML
     private TextArea chatHistoryTextArea;
@@ -82,6 +84,13 @@ public class ChatController {
             addUserInScene();
             availableUsersListView.requestLayout();
         });
+    }
+
+    public void openKeyWindow() {
+        Stage newStage = new Stage();
+        Scene scene = new Scene(fxWeaver.loadView(KeyController.class), 600, 400);
+        newStage.setScene(scene);
+        newStage.show();
     }
 
     private void addUserInScene() {
@@ -145,13 +154,8 @@ public class ChatController {
         this.connectedClientsStorageService = connectedClientsStorageService;
     }
 
-    public void openKeyWindow() {
-        try {
-            // Загрузка FXML файла для окна с ключом
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/key.fxml"));
-            Parent root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace(); // Обработка ошибок загрузки FXML файла
-        }
+    @Autowired
+    public void setFxWeaver(FxWeaver fxWeaver) {
+        this.fxWeaver = fxWeaver;
     }
 }

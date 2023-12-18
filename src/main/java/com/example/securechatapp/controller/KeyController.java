@@ -5,6 +5,7 @@ package com.example.securechatapp.controller;
 import com.example.securechatapp.service.KeyGeneratorService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Controller;
 public class KeyController {
 
     @FXML
-    private Label publicKeyLabel;
+    private ScrollPane publicKeyLabel;
 
     private final KeyGeneratorService keyGeneratorService;
 
@@ -31,8 +32,11 @@ public class KeyController {
 
     void setPublicKey() {
         String publicKey = keyGeneratorService.getFormattedPublicKey();
+        String privateKey = keyGeneratorService.getFormattedPrivateKey();
         if (publicKeyLabel != null) {
-            publicKeyLabel.setText(publicKey);
+            Label label = new Label();
+            label.setText(publicKey + "\n" + privateKey);
+            publicKeyLabel.setContent(label);
         }
     }
 }

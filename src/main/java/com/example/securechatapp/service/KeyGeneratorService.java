@@ -49,8 +49,32 @@ public class KeyGeneratorService {
     public String getFormattedPublicKey() {
         if (keyPair != null) {
             PublicKey publicKey = keyPair.getPublic();
-            return Base64.getEncoder().encodeToString(publicKey.getEncoded());
+            String formattedKey = formatPEM(publicKey.getEncoded(), "PUBLIC");
+            return formattedKey;
         }
         return null;
+    }
+
+    public String getFormattedPrivateKey() {
+        if (keyPair != null) {
+            PrivateKey privateKey = keyPair.getPrivate();
+            String formattedKey = formatPEM(privateKey.getEncoded(), "PRIVATE");
+            return formattedKey;
+        }
+        return null;
+    }
+
+    private String formatPEM(byte[] keyBytes, String keyMod) {
+        String base64Key = Base64.getEncoder().encodeToString(keyBytes);
+
+        StringBuilder formattedKeyBuilder = new StringBuilder("-----BEGIN RSA " + keyMod + " KEY-----\n");
+        for (int i = 0; i < base64Key.length(); i++) {
+            formattedKeyBuilder.append(base64Key.charAt(i));
+            if ((i + 1) % 40 == 0) {
+                formattedKeyBuilder.append("\n");
+            }
+        }
+        formattedKeyBuilder.append("\n-----END RSA ").append(keyMod).append(" KEY-----");
+        return formattedKeyBuilder.toString();
     }
 }

@@ -80,7 +80,7 @@ public class ChatController {
 
     public void openKeyWindow() {
         Stage newStage = new Stage();
-        Scene scene = new Scene(fxWeaver.loadView(KeyController.class), 600, 400);
+        Scene scene = new Scene(fxWeaver.loadView(KeyController.class), 442, 294);
         newStage.setScene(scene);
         newStage.show();
     }

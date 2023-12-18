@@ -31,7 +31,7 @@ public class KeyController {
 
     // Метод для установки публичного ключа
     void setPublicKey() {
-        String publicKey = KeyGeneratorService.getFormattedPublicKey();
+        String publicKey = keyGeneratorService.getPublicKey().toString();
         if (publicKeyLabel != null) {
             publicKeyLabel.setText(publicKey);
         }
